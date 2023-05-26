@@ -4,7 +4,7 @@
 - FPGA-based Arm Cortex-M3 hardware system build and software development
 - Creating a Custom IP core and Integrating it into the System
   - Creating an AXI4 IP core in Vivado
-  - Creating a Driver code with Xilinx Hardware Abstraction Layer API
+  - Creating a Driver code with Xilinx Standalone Library
 
 ## Getting Started
 ### Prerequisite
