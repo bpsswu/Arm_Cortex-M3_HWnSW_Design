@@ -40,6 +40,10 @@ always @ (*) begin
 			if (!i_level) next = IDLE;
 			else next = LONG;
 		end
+		default : begin
+			next = IDLE;
+			o_pulse = 0;
+		end
 	endcase
 end
 

@@ -24,7 +24,6 @@ reg [31 : 0] buf_exp;
 reg [31 : 0] buf_N;
 reg [63 : 0] buf_r;
 reg [63 : 0] buf_x;
-reg [3 : 0] cnt_done;
 reg [1 : 0] state, next;
 parameter IDLE = 0, START = 1, CALC = 2, DONE = 3;
 
@@ -60,14 +59,16 @@ always @ (*) begin
 			else next = CALC;
 		end
 		DONE : begin
-			if (cnt_done == 5) next = IDLE;
-			else next = DONE;
+			next = IDLE;
+		end
+		default : begin
+			next = IDLE;
 		end
 	endcase
 end
 
 // [0 : 0] o_end
-assign o_end = (state == DONE) ? 1'b1 : 1'b0;
+assign o_end = (state == IDLE || state == DONE) ? 1'b1 : 1'b0;
 
 // [31 : 0] buf_exp
 always @ (posedge i_clk or negedge i_rstn) begin
@@ -97,6 +98,9 @@ always @ (posedge i_clk or negedge i_rstn) begin
 end
 
 // [63 : 0] buf_r
+wire [63 : 0] temp1, temp2;
+assign temp1 = (buf_r * buf_r);
+assign temp2 = temp1 % buf_N;
 always @ (posedge i_clk or negedge i_rstn) begin
 	if (!i_rstn) begin
 		buf_r <= 64'h0;
@@ -106,12 +110,15 @@ always @ (posedge i_clk or negedge i_rstn) begin
 			buf_r <= {32'h0, i_base};
 		end
 		else if (state == CALC) begin
-			buf_r <= (buf_r * buf_r) % buf_N;
+			buf_r <= temp2;
 		end
 	end
 end
 
 // [63 : 0] buf_x
+wire [63 : 0] temp3, temp4;
+assign temp3 = (buf_x * buf_r);
+assign temp4 = temp3 % buf_N;
 always @ (posedge i_clk or negedge i_rstn) begin
 	if (!i_rstn) begin
 		buf_x <= 64'h0;
@@ -121,7 +128,7 @@ always @ (posedge i_clk or negedge i_rstn) begin
 			buf_x <= 64'h1;
 		end
 		else if ((state == CALC) && (buf_exp[0] == 1)) begin
-			buf_x <= (buf_x * buf_r) % buf_N;
+			buf_x <= temp4;
 		end
 	end
 end
@@ -134,21 +141,6 @@ always @ (posedge i_clk or negedge i_rstn) begin
 	else begin
 		if (state == DONE) begin
 			o_result <= buf_x;
-		end
-	end
-end
-
-// [3 : 0] cnt_done
-always @ (posedge i_clk or negedge i_rstn) begin
-	if (!i_rstn) begin
-		cnt_done <= 4'h0;
-	end
-	else begin
-		if (state == IDLE) begin
-			cnt_done <= 4'h0;
-		end
-		else if (state == DONE) begin
-			cnt_done <= cnt_done + 1;
 		end
 	end
 end
