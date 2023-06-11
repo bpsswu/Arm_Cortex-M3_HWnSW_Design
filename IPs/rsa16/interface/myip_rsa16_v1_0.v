@@ -1,6 +1,7 @@
+
 `timescale 1 ns / 1 ps
 
-	module myip_rsa32_v1_0 #
+	module myip_rsa16_v1_0 #
 	(
 		// Users to add parameters here
 
@@ -14,7 +15,7 @@
 	)
 	(
 		// Users to add ports here
-        // output wire rsa_out,
+
 		// User ports ends
 		// Do not modify the ports beyond this line
 
@@ -43,10 +44,10 @@
 		input wire  s00_axi_rready
 	);
 // Instantiation of Axi Bus Interface S00_AXI
-	myip_rsa32_v1_0_S00_AXI # ( 
+	myip_rsa16_v1_0_S00_AXI # ( 
 		.C_S_AXI_DATA_WIDTH(C_S00_AXI_DATA_WIDTH),
 		.C_S_AXI_ADDR_WIDTH(C_S00_AXI_ADDR_WIDTH)
-	) myip_rsa32_v1_0_S00_AXI_inst (
+	) myip_rsa16_v1_0_S00_AXI_inst (
 		.S_AXI_ACLK(s00_axi_aclk),
 		.S_AXI_ARESETN(s00_axi_aresetn),
 		.S_AXI_AWADDR(s00_axi_awaddr),

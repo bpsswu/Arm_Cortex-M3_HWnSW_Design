@@ -1,18 +1,18 @@
 `timescale 1ns/1ns
 
-module TB_rsa32;
+module TB_rsa16;
 
 reg i_clk;
 reg i_rstn;
 reg i_start;
-reg [31 : 0] i_base;
-reg [31 : 0] i_exp;
-reg [31 : 0] i_N;
+reg [15 : 0] i_base;
+reg [15 : 0] i_exp;
+reg [15 : 0] i_N;
 
-wire [31 : 0] o_result;
+wire [15 : 0] o_result;
 wire o_end;
 
-rsa32 DUT
+rsa16 DUT
 (
 	.i_clk(i_clk),
 	.i_rstn(i_rstn),
@@ -24,7 +24,7 @@ rsa32 DUT
     .o_end(o_end)
 );
 
-always #5 i_clk = ~i_clk;
+always #100 i_clk = ~i_clk;
 
 initial begin
     
@@ -43,9 +43,9 @@ i_rstn = 0;
 i_rstn = 1;
 
 #20
-i_base = 1234567;
-i_exp = 7654321;
-i_N = 1234567891;
+i_base = 1234;
+i_exp = 4321;
+i_N = 61455;
 
 #13
 i_start = 1;
@@ -54,9 +54,9 @@ i_start = 1;
 i_start = 0;
 
 #420
-i_base = 7654321;
-i_exp = 1234567;
-i_N = 87654321;
+i_base = 28601;
+i_exp = 23456;
+i_N = 61455;
 
 #13
 i_start = 1;

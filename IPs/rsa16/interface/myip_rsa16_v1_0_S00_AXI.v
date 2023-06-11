@@ -1,7 +1,7 @@
 
 `timescale 1 ns / 1 ps
 
-	module myip_rsa32_v1_0_S00_AXI #
+	module myip_rsa16_v1_0_S00_AXI #
 	(
 		// Users to add parameters here
 
@@ -15,7 +15,7 @@
 	)
 	(
 		// Users to add ports here
-        // output wire rsa_out,
+
 		// User ports ends
 		// Do not modify the ports beyond this line
 
@@ -103,15 +103,13 @@
 	//----------------------------------------------
 	//-- Signals for user logic register space example
 	//------------------------------------------------
-	//-- Number of Slave Registers 8
+	//-- Number of Slave Registers 6
 	reg [C_S_AXI_DATA_WIDTH-1:0]	slv_reg0;
 	reg [C_S_AXI_DATA_WIDTH-1:0]	slv_reg1;
 	reg [C_S_AXI_DATA_WIDTH-1:0]	slv_reg2;
 	reg [C_S_AXI_DATA_WIDTH-1:0]	slv_reg3;
 	reg [C_S_AXI_DATA_WIDTH-1:0]	slv_reg4;
 	reg [C_S_AXI_DATA_WIDTH-1:0]	slv_reg5;
-	reg [C_S_AXI_DATA_WIDTH-1:0]	slv_reg6;
-	reg [C_S_AXI_DATA_WIDTH-1:0]	slv_reg7;
 	wire	 slv_reg_rden;
 	wire	 slv_reg_wren;
 	reg [C_S_AXI_DATA_WIDTH-1:0]	 reg_data_out;
@@ -230,8 +228,6 @@
 	      slv_reg3 <= 0;
 	      // slv_reg4 <= 0;
 	      // slv_reg5 <= 0;
-	      slv_reg6 <= 0;
-	      slv_reg7 <= 0;
 	    end 
 	  else begin
 	    if (slv_reg_wren)
@@ -279,20 +275,6 @@
 	                // Slave register 5
 	                slv_reg5[(byte_index*8) +: 8] <= S_AXI_WDATA[(byte_index*8) +: 8];
 	              end */
-	          3'h6:
-	            for ( byte_index = 0; byte_index <= (C_S_AXI_DATA_WIDTH/8)-1; byte_index = byte_index+1 )
-	              if ( S_AXI_WSTRB[byte_index] == 1 ) begin
-	                // Respective byte enables are asserted as per write strobes 
-	                // Slave register 6
-	                slv_reg6[(byte_index*8) +: 8] <= S_AXI_WDATA[(byte_index*8) +: 8];
-	              end  
-	          3'h7:
-	            for ( byte_index = 0; byte_index <= (C_S_AXI_DATA_WIDTH/8)-1; byte_index = byte_index+1 )
-	              if ( S_AXI_WSTRB[byte_index] == 1 ) begin
-	                // Respective byte enables are asserted as per write strobes 
-	                // Slave register 7
-	                slv_reg7[(byte_index*8) +: 8] <= S_AXI_WDATA[(byte_index*8) +: 8];
-	              end  
 	          default : begin
 	                      slv_reg0 <= slv_reg0;
 	                      slv_reg1 <= slv_reg1;
@@ -300,8 +282,6 @@
 	                      slv_reg3 <= slv_reg3;
 	                      // slv_reg4 <= slv_reg4;
 	                      // slv_reg5 <= slv_reg5;
-	                      slv_reg6 <= slv_reg6;
-	                      slv_reg7 <= slv_reg7;
 	                    end
 	        endcase
 	      end
@@ -416,8 +396,6 @@
 	        3'h3   : reg_data_out <= slv_reg3;
 	        3'h4   : reg_data_out <= slv_reg4;
 	        3'h5   : reg_data_out <= slv_reg5;
-	        3'h6   : reg_data_out <= slv_reg6;
-	        3'h7   : reg_data_out <= slv_reg7;
 	        default : reg_data_out <= 0;
 	      endcase
 	end
@@ -442,7 +420,7 @@
 	end    
 
 	// Add user logic here
-wire [31 : 0] rsa_result;
+wire [15 : 0] rsa_result;
 wire rsa_out;
 
 always @ (posedge S_AXI_ACLK) begin
@@ -451,23 +429,22 @@ always @ (posedge S_AXI_ACLK) begin
         slv_reg5 <= 32'h0;
     end
     else begin
-        slv_reg4 <= rsa_result;
+        slv_reg4 <= {16'h0, rsa_result};
         slv_reg5[0] <= rsa_out;
     end
 end
 
-rsa32 core_1
+rsa16 core_1
 (
 	.i_clk(S_AXI_ACLK),
 	.i_rstn(S_AXI_ARESETN),
 	.i_start(slv_reg0[0]),
-	.i_base(slv_reg1),
-    .i_exp(slv_reg2),
-    .i_N(slv_reg3),
+	.i_base(slv_reg1[15 : 0]),
+    .i_exp(slv_reg2[15 : 0]),
+    .i_N(slv_reg3[15 : 0]),
     .o_result(rsa_result),
     .o_end(rsa_out)
 );
-    
 	// User logic ends
 
 	endmodule

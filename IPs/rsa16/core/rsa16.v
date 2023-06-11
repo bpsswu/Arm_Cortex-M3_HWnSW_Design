@@ -1,29 +1,29 @@
 /*
-	module name 	: rsa32
+	module name 	: rsa16
 	@ input			: clk, rst, start, base, exp, N
 	@ output		: result, end
-	@ description	: calculate 32-bit modular exponentiation (result = (base ^ exp) mod N)
+	@ description	: calculate 16-bit modular exponentiation (result = (base ^ exp) mod N)
 */
-module rsa32
+module rsa16
 (
 	input wire i_clk,
 	input wire i_rstn,
     input wire i_start,
-	input wire [31 : 0] i_base,
-    input wire [31 : 0] i_exp,
-    input wire [31 : 0] i_N,
+	input wire [15 : 0] i_base,
+    input wire [15 : 0] i_exp,
+    input wire [15 : 0] i_N,
 
-	output reg [31 : 0] o_result,
+	output reg [15 : 0] o_result,
 	output wire o_end
 );
 
 /* Local variables */
 
 wire i_start_p;
-reg [31 : 0] buf_exp;
-reg [31 : 0] buf_N;
-reg [63 : 0] buf_r;
-reg [63 : 0] buf_x;
+reg [15 : 0] buf_exp;
+reg [15 : 0] buf_N;
+reg [31 : 0] buf_r;
+reg [31 : 0] buf_x;
 reg [1 : 0] state, next;
 parameter IDLE = 0, START = 1, CALC = 2, DONE = 3;
 
@@ -61,19 +61,16 @@ always @ (*) begin
 		DONE : begin
 			next = IDLE;
 		end
-		default : begin
-			next = IDLE;
-		end
 	endcase
 end
 
 // [0 : 0] o_end
 assign o_end = (state == IDLE || state == DONE) ? 1'b1 : 1'b0;
 
-// [31 : 0] buf_exp
+// [15 : 0] buf_exp
 always @ (posedge i_clk or negedge i_rstn) begin
 	if (!i_rstn) begin
-		buf_exp <= 32'h0;
+		buf_exp <= 16'h0;
 	end
 	else begin
 		if (state == START) begin
@@ -85,10 +82,10 @@ always @ (posedge i_clk or negedge i_rstn) begin
 	end
 end
 
-// [31 : 0] buf_N
+// [15 : 0] buf_N
 always @ (posedge i_clk or negedge i_rstn) begin
 	if (!i_rstn) begin
-		buf_N <= 32'h0;
+		buf_N <= 16'h0;
 	end
 	else begin
 		if (state == START) begin
@@ -97,17 +94,17 @@ always @ (posedge i_clk or negedge i_rstn) begin
 	end
 end
 
-// [63 : 0] buf_r
-wire [63 : 0] temp1, temp2;
+// [31 : 0] buf_r
+wire [31 : 0] temp1, temp2;
 assign temp1 = (buf_r * buf_r);
 assign temp2 = temp1 % buf_N;
 always @ (posedge i_clk or negedge i_rstn) begin
 	if (!i_rstn) begin
-		buf_r <= 64'h0;
+		buf_r <= 32'h0;
 	end
 	else begin
 		if (state == START) begin
-			buf_r <= {32'h0, i_base};
+			buf_r <= {16'h0, i_base};
 		end
 		else if (state == CALC) begin
 			buf_r <= temp2;
@@ -115,17 +112,17 @@ always @ (posedge i_clk or negedge i_rstn) begin
 	end
 end
 
-// [63 : 0] buf_x
-wire [63 : 0] temp3, temp4;
+// [31 : 0] buf_x
+wire [31 : 0] temp3, temp4;
 assign temp3 = (buf_x * buf_r);
 assign temp4 = temp3 % buf_N;
 always @ (posedge i_clk or negedge i_rstn) begin
 	if (!i_rstn) begin
-		buf_x <= 64'h0;
+		buf_x <= 32'h0;
 	end
 	else begin
 		if (state == START) begin
-			buf_x <= 64'h1;
+			buf_x <= 32'h1;
 		end
 		else if ((state == CALC) && (buf_exp[0] == 1)) begin
 			buf_x <= temp4;
@@ -133,10 +130,10 @@ always @ (posedge i_clk or negedge i_rstn) begin
 	end
 end
 
-// [31 : 0] o_result
+// [15 : 0] o_result
 always @ (posedge i_clk or negedge i_rstn) begin
 	if (!i_rstn) begin
-		o_result <= 32'h0;
+		o_result <= 16'h0;
 	end
 	else begin
 		if (state == DONE) begin
