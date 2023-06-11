@@ -13,7 +13,7 @@
   ⚠️ You need to find the Cortex-M3 DesignStart FPGA Xilinx Edition (AT426) in the Arm Download Hub and download the compressed file.
   It may change over time, but I'll post the link information.
   https://developer.arm.com/downloads/view/AT426
-* FPGA Board (Digilent Art A7-35t)
+* FPGA Board (Digilent Arty A7-35t)
 * Xilinx Vivado & Xilinx SDK (2019.1)
 * Arm Keil MDK (5.24a)
 * Basic knowledge of Verilog and C language
