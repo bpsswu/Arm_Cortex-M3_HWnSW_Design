@@ -21,9 +21,26 @@
 ## Project Flow
 ![2023-05-27 00 12 29](https://github.com/bpsswu/digital_signature/assets/101001675/46cbe196-194e-488e-bc1a-0640c9f1b7da)
 
-### STEP 1 : IP core design (Hardware & Driver)
-### STEP 2 : System Integration
-### STEP 3 : BSP Generation
-### STEP 4 : Create Application SW
+### STEP 1 : IP core design
+(Example: 16-bit rsa IP core)
+- IP core Hardware Design
+  - Verilog HDL & Xilinx Vivado
+  - Interface : AXI4 Lite
+  - Core : 16-bit level RSA operation
+  - ![image](https://github.com/bpsswu/Arm_Cortex-M3_HWnSW_Design/assets/101001675/2abfd7ef-c7e7-4319-a216-b890078d0624)
 
+### STEP 2 : System Integration
+- Block Design in Xilinx Vivado
+  - Integrate the designed IP core into the system through the AXI protocol
+  - ![image](https://github.com/bpsswu/Arm_Cortex-M3_HWnSW_Design/assets/101001675/3dcde642-5659-4680-8757-1c06399497f3)
+- Address Map
+  - Memory Mapped I/O
+  - ![image](https://github.com/bpsswu/Arm_Cortex-M3_HWnSW_Design/assets/101001675/5a53df0a-b065-4aa4-a32d-d304c87f1bad)
+### STEP 3 : BSP Generation
+Xilinx SDK
+- Hardware Export
+- Launch XSDK
+- Generate BSP
+### STEP 4 : Create Application SW
+Arm Keil MDK
 ## Directory Structure
