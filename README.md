@@ -36,11 +36,17 @@
 - Address Map
   - Memory Mapped I/O
   ![image](https://github.com/bpsswu/Arm_Cortex-M3_HWnSW_Design/assets/101001675/5a53df0a-b065-4aa4-a32d-d304c87f1bad)
-### STEP 3 : BSP Generation
-Xilinx SDK
+### STEP 3 : BSP Generation (Xilinx SDK)
 - Hardware Export
 - Launch XSDK
 - Generate BSP
-### STEP 4 : Create Application SW
-Arm Keil MDK
+### STEP 4 : Create Application SW (Arm Keil MDK)
+- 16-bit RSA encryption/decryption TEST
+- 16-bit RSA signing/verifying TEST
+  ![image](https://github.com/bpsswu/Arm_Cortex-M3_HWnSW_Design/assets/101001675/65b39213-6a24-439c-b5c5-8a57220a063a)
 ## Directory Structure
+- IPs : sample IP core
+  - core : Core functional part of IP core
+  - interface : AXI4 interface part of IP core
+  - driver : driver code for IP core
+- keil : sample application SW 
