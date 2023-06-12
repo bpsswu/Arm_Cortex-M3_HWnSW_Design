@@ -21,9 +21,9 @@
 ## Project Flow
 ![2023-05-27 00 12 29](https://github.com/bpsswu/digital_signature/assets/101001675/46cbe196-194e-488e-bc1a-0640c9f1b7da)
 
-### STEP 1 : IP core design
+### STEP 1 : IP core design (Hardware & Driver)
 ### STEP 2 : System Integration
-### STEP 3 : Create BSP & Driver
+### STEP 3 : BSP Generation
 ### STEP 4 : Create Application SW
 
 ## Directory Structure
