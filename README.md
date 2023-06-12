@@ -27,12 +27,12 @@
   - Verilog HDL & Xilinx Vivado
   - Interface : AXI4 Lite
   - Core : 16-bit level RSA operation
-  ![image](https://github.com/bpsswu/Arm_Cortex-M3_HWnSW_Design/assets/101001675/a5dcad47-14a1-4412-a2ba-7b487aaacfb4)
+  ![image](https://github.com/bpsswu/Arm_Cortex-M3_HWnSW_Design/assets/101001675/a02afb6c-d732-4114-8a7a-2b4a77e794ae)
 
 ### STEP 2 : System Integration
 - Block Design in Xilinx Vivado
   - Integrate the designed IP core into the system through the AXI protocol
-  - ![image](https://github.com/bpsswu/Arm_Cortex-M3_HWnSW_Design/assets/101001675/3dcde642-5659-4680-8757-1c06399497f3)
+  ![image](https://github.com/bpsswu/Arm_Cortex-M3_HWnSW_Design/assets/101001675/a5dcad47-14a1-4412-a2ba-7b487aaacfb4)
 - Address Map
   - Memory Mapped I/O
   ![image](https://github.com/bpsswu/Arm_Cortex-M3_HWnSW_Design/assets/101001675/5a53df0a-b065-4aa4-a32d-d304c87f1bad)
