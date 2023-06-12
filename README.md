@@ -27,7 +27,7 @@
   - Verilog HDL & Xilinx Vivado
   - Interface : AXI4 Lite
   - Core : 16-bit level RSA operation
-  - ![image](https://github.com/bpsswu/Arm_Cortex-M3_HWnSW_Design/assets/101001675/2abfd7ef-c7e7-4319-a216-b890078d0624)
+  ![image](https://github.com/bpsswu/Arm_Cortex-M3_HWnSW_Design/assets/101001675/a5dcad47-14a1-4412-a2ba-7b487aaacfb4)
 
 ### STEP 2 : System Integration
 - Block Design in Xilinx Vivado
@@ -35,7 +35,7 @@
   - ![image](https://github.com/bpsswu/Arm_Cortex-M3_HWnSW_Design/assets/101001675/3dcde642-5659-4680-8757-1c06399497f3)
 - Address Map
   - Memory Mapped I/O
-  - ![image](https://github.com/bpsswu/Arm_Cortex-M3_HWnSW_Design/assets/101001675/5a53df0a-b065-4aa4-a32d-d304c87f1bad)
+  ![image](https://github.com/bpsswu/Arm_Cortex-M3_HWnSW_Design/assets/101001675/5a53df0a-b065-4aa4-a32d-d304c87f1bad)
 ### STEP 3 : BSP Generation
 Xilinx SDK
 - Hardware Export
