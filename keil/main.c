@@ -150,24 +150,26 @@ int main(void)
         sprintf(CPU_name, "Unknown %x", CPU_part);
     }
 
-    sprintf(debugStr, "Arm %s Revision %i Variant %i\r\n\n", CPU_name, CPU_rev, CPU_var);
+    // sprintf(debugStr, "Arm %s Revision %i Variant %i\r\n\n", CPU_name, CPU_rev, CPU_var);
 
 #ifndef SIM_BUILD
     // Use Xilinx version print command
-    print("************************************\r\n");
-    print(debugStr);
-    print("Example design for Digilent A7 board\r\n");
-    if (DAPLinkFittedn)
+    // print(debugStr);
+    print("******************************************\r\n");
+    print("Arm Cortex-M3 for Digilent A7 FPGA board\r\n");
+    /*if (DAPLinkFittedn)
         print("\nV2C-DAPLink board not detected\r\n");
     else
-        print("\nV2C-DAPLink board detected\r\n");
-    print("Use DIP switches and push buttons to\r\ncontrol LEDS\r\n");
-    print(" Version 1.1\r\n");
-    print("************************************\r\n");
+        print("\nV2C-DAPLink board detected\r\n");*/
+    //print("Use DIP switches and push buttons to\r\ncontrol LEDS\r\n");
+    //print("Version 1.1\r\n\n");
+    //print("************************************\r\n");
 #else
     print(debugStr);
 #endif
 
+    print("Start System Check ...\r\n");
+    
     // *****************************
     // Test the code memory aliasing
     // *****************************
@@ -221,24 +223,28 @@ int main(void)
         }
     }
 
+    char temp[20];
+    sprintf(temp, "status = %d\r\n", status);
+    print(temp);
+    
     if (status == 3)
     {
-        print("Upper and lower regions written since BRAM initialised\r\n");
+        print("[1] Upper and lower regions written since BRAM initialised\r\n");
         status = 0;
     }
     if (status == 2)
     {
-        print("Upper alias writen since BRAM initialised\r\n");
+        print("[1] Upper alias writen since BRAM initialised\r\n");
         status = 0;
     }
     if (status == 4 && (*(uint32_t *)0x0000001c == 12))
     {
-        print("ITCM also aliased high\r\n");
+        print("[1] ITCM also aliased high\r\n");
         status = 0;
     }
     if (status != 0)
     {
-        print("Unexpected alias behaviour");
+        print("[ERR] Unexpected alias behaviour");
         // 1: QSPI content unexpected
         // 2: ITCM content unexpected (maybe written by download)
         // 4: Lower alias overwritten or wrong
@@ -248,7 +254,7 @@ int main(void)
     }
     else
     {
-        print("Aliasing OK\r\n");
+        print("[2] Aliasing OK\r\n");
     }
     // *****************************************************
     // Test the BRAM
@@ -269,9 +275,9 @@ int main(void)
     }
 
     if (readbackError)
-        print("ERROR - Bram readback corrupted.\r\n");
+        print("[ERR] Bram readback corrupted.\r\n");
     else
-        print("Bram readback correct\r\n");
+        print("[3] Bram readback correct\r\n");
 
     // *****************************************************
     // Test the SPI
@@ -297,9 +303,9 @@ int main(void)
     }
 
     if (readbackError)
-        print("ERROR - Base SPI readback corrupted.\r\n");
+        print("[ERR] Base SPI readback corrupted.\r\n");
     else
-        print("Base SPI readback correct\r\n");
+        print("[4] Base SPI readback correct\r\n");
 
     // ******************************************************
     // Test exceptions.  Write to legal and illegal addresses
@@ -320,65 +326,76 @@ int main(void)
     status = atomic_access(&dtcmTest, 0x12341230);
     if (status == 1)
     {
-        print("STREX DTCM failed unexpectedly\r\n");
+        print("[ERR] STREX DTCM failed unexpectedly\r\n");
     }
     // Instruction TCM supports exclusive access (ARTY connected)
     status = atomic_access((uint32_t *)0x10001000, 0x12341231);
     if (status == 1)
     {
-        print("STREX ITCM high alias failed unexpectedly\r\n");
+        print("[ERR] STREX ITCM high alias failed unexpectedly\r\n");
     }
     // Instruction QSPI region, no exclusive monitor
     // Unused vector table entry after Usage fault handler
     status = atomic_access((uint32_t *)0x0000001c, 0x12341232);
     if (status == 1 && DAPLinkFittedn)
     {
-        print("STREX ITCM low alias failed unexpectedly\r\n");
+        print("[ERR] STREX ITCM low alias failed unexpectedly\r\n");
     }
     if (status == 0 && !DAPLinkFittedn)
     {
-        print("STREX QSPI success (unexpected)\r\n");
+        print("[ERR] STREX QSPI success (unexpected)\r\n");
     }
     // BRAM region is external, no exclusive monitor
     status = atomic_access((uint32_t *)XPAR_BRAM_0_BASEADDR, 0x12341233);
     if (status == 0 && !DAPLinkFittedn)
     {
-        print("STREX BRAM success (unexpected)\r\n");
+        print("[ERR] STREX BRAM success (unexpected)\r\n");
     }
-    print("Atomic transaction test completed\r\n");
+    print("[5] Atomic transaction test completed\r\n");
 
-    print("Startup complete, entering main interrupt loop\r\n");
+    print("... System Check complete\r\n\n");
 
-    print("\n*** rsa16 test ***\r\n");
+    print("__RSA16 IP CORE TEST__\r\n");
 
     char str[50];
 
-    /*
-    rsa16_setInput(XPAR_MYIP_RSA16_0_S00_AXI_BASEADDR, 3344, 5566, 54321);
-    rsa16_start(XPAR_MYIP_RSA16_0_S00_AXI_BASEADDR);
-    sprintf(str_out, "rsa16 : %d\r\n", Xil_In32(XPAR_MYIP_RSA16_0_S00_AXI_BASEADDR + 16));
-    print(test_str);
-    */
-
     struct rsa_key key;
     rsa16_keygen(&key);
-
-    u32 data = 1234;
+    
+    print("\n*** Encryption/Decryption TEST ***\r\n");
+    
+    sprintf(str, "RSA key info ( N : %d, e : %d, d: %d )\r\n", key.N, key.e, key.d);
+    print(str);
+    
+    u32 data = 12345;
     u32 data_encrypted = rsa16_encrypt(key, data);
     u32 data_decrypted = rsa16_decrypt(key, data_encrypted);
-
-    sprintf(str, "data = %d\r\n", data);
+    
+    sprintf(str, "\noriginal data = %d\r\n", data);
     print(str);
-
     sprintf(str, "data_encrypted = %d\r\n", data_encrypted);
     print(str);
-
     sprintf(str, "data_decrypted = %d\r\n", data_decrypted);
     print(str);
+    
+    print("\n*** Signing/Verifying TEST ***\r\n");
+    
+    sprintf(str, "RSA key info ( N : %d, e : %d, d: %d )\r\n", key.N, key.e, key.d);
+    print(str);
+   
+    u32 data_signed = rsa16_sign(key, data);
+    u32 data_verified = rsa16_verify(key, data_signed);
 
+    sprintf(str, "\noriginal data = %d\r\n", data);
+    print(str);
+    sprintf(str, "data_signed = %d\r\n", data_signed);
+    print(str);
+    sprintf(str, "data_verified = %d\r\n", data_verified);
+    print(str);
+    
     while (1)
     {
-        // main loop
+        // Main Loop
     }
 }
 
